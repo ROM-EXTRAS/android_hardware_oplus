@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.preference.ListPreference;
@@ -125,6 +126,7 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
                     return false;
                 }
                 final int action = Integer.parseInt(String.valueOf(value));
+                Log.d("DF32", "Sending Broadcast from persistString: " + mTouchscreenGestures);
                 sendUpdateBroadcast(mContext, mTouchscreenGestures);
                 return true;
             }
@@ -139,9 +141,10 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
             final TouchscreenGesture[] gestures = manager.getTouchscreenGestures();
             final int[] actionList = buildActionList(context, gestures);
             for (final TouchscreenGesture gesture : gestures) {
+                Log.d("DF32", "Set gesture: " + gesture + " as " + (actionList[gesture.id] > 0));
                 manager.setTouchscreenGestureEnabled(gesture, actionList[gesture.id] > 0);
             }
-
+            Log.d("DF32", "Sending Broadcast restoreTouchscreenGestureStates: " + gestures);
             sendUpdateBroadcast(context, gestures);
         }
 
@@ -182,6 +185,7 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
 
         private static void sendUpdateBroadcast(final Context context,
                 final TouchscreenGesture[] gestures) {
+                    Log.d("DF32", "Sending Broadcast of gestures:" + gestures);
             final Intent intent = new Intent(TouchscreenGestureConstants.UPDATE_PREFS_ACTION);
             final int[] keycodes = new int[gestures.length];
             final int[] actions = buildActionList(context, gestures);

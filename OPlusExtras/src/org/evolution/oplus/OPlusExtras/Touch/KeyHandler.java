@@ -122,6 +122,7 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     public KeyEvent handleKeyEvent(final KeyEvent event) {
+        Log.d("DF32", "handling KeyEvent");
         final int action = mActionMapping.get(event.getScanCode(), -1);
         if (action < 0 || event.getAction() != KeyEvent.ACTION_UP || !hasSetupCompleted()) {
             return event;
@@ -143,11 +144,13 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     private boolean hasSetupCompleted() {
+        Log.d("DF32", "hasSetupCompleted");
         return Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.USER_SETUP_COMPLETE, 0) != 0;
     }
 
     private void processEvent(final int action) {
+        Log.d("DF32", "processing event");
         mProximityWakeLock.acquire();
         mSensorManager.registerListener(new SensorEventListener() {
             @Override
@@ -167,6 +170,7 @@ public class KeyHandler implements DeviceKeyHandler {
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                Log.d("DF32", "Accuracy changed");
                 // Ignore
             }
 
@@ -174,6 +178,7 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     private Message getMessageForAction(final int action) {
+        Log.d("DF32", "get message for action");
         Message msg = mEventHandler.obtainMessage(GESTURE_REQUEST);
         msg.arg1 = action;
         return msg;
@@ -182,6 +187,7 @@ public class KeyHandler implements DeviceKeyHandler {
     private class EventHandler extends Handler {
         @Override
         public void handleMessage(final Message msg) {
+            Log.d("DF32", "handling message" + msg.arg1);
             switch (msg.arg1) {
                 case TouchscreenGestureConstants.ACTION_CAMERA:
                     launchCamera();
